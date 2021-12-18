@@ -103,16 +103,16 @@ jobs:
 #          format: 'table'
 #          exit-code: '1'
 #          timeout: "10m0s"
-#      - name: Create release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.BALLERINA_BOT_TOKEN }}
-#        with:
-#          tag_name: "v${{ steps.version-set.outputs.taggedVersion }}"
-#          release_name: ${{ steps.version-set.outputs.taggedVersion }}
-#          draft: false
-#          prerelease: ${{ github.event.inputs.isPreRelease }}
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.BALLERINA_BOT_TOKEN }}
+        with:
+          tag_name: "v${{ steps.version-set.outputs.taggedVersion }}"
+          release_name: ${{ steps.version-set.outputs.taggedVersion }}
+          draft: false
+          prerelease: ${{ github.event.inputs.isPreRelease }}
       - name: Create linux-deb Installer
         id: run_installers_deb
         run: |
