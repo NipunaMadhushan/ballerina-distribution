@@ -51,7 +51,7 @@ jobs:
         run: |
           UUID=$(uuidgen)
           echo "Generated UUID : $UUID"
-          sed -ir "s/^\s*installerVersion=.*/installerVersion=$UUID/" gradle.properties
+          perl -pi -e "s/^\s*installerVersion=.*/installerVersion=$UUID/" gradle.properties
           INSTALLER_VERSION=$((grep -w 'installerVersion' | cut -d= -f2) < gradle.properties)
           echo "Installer Version : $INSTALLER_VERSION"
           git config user.name ${{ secrets.BALLERINA_BOT_USERNAME }}
