@@ -58,6 +58,7 @@ jobs:
           git config user.email ${{ secrets.BALLERINA_BOT_EMAIL }}
           git add gradle.properties
           git commit -m "Update UUID for installer"
+          git push
           git status
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
