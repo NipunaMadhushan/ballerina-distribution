@@ -58,7 +58,6 @@ jobs:
           git config user.email ${{ secrets.BALLERINA_BOT_EMAIL }}
           git add gradle.properties
           git commit -m "Update UUID for installer"
-          git push
           git status
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -69,7 +68,7 @@ jobs:
           packagePAT: ${{ secrets.BALLERINA_BOT_TOKEN }}
           devCentralToken: ${{ secrets.BALLERINA_DEV_CENTRAL_ACCESS_TOKEN }}
         run: |
-          ./gradlew build -Pversion=${VERSION}
+          ./gradlew build -Pversion=${VERSION} -x test
           ./gradlew release -Prelease.useAutomaticVersion=true -x test
 #      - name: Checkout docker repo
 #        uses: actions/checkout@v2
