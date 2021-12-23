@@ -287,7 +287,7 @@ jobs:
           echo "Created windows-msi successfully"
       - name: Generate Hashes
         run: |
-          openssl dgst -sha256 -out ballerina-windows-installer-x64-${{ needs.ubuntu-build.outputs.project-version }}.msi.sha256 w\target\msi\ballerina-windows-installer-x64-*.msi
+          openssl dgst -sha256 -out ballerina-windows-installer-x64-${{ needs.ubuntu-build.outputs.project-version }}.msi.sha256 w\target\msi\ballerina-windows-installer-x64-${{ needs.ubuntu-build.outputs.project-version }}.msi
       - name: Archive Windows msi Hashes
         uses: actions/upload-artifact@v2
         with:
@@ -297,7 +297,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Windows Installer msi
-          path: w\target\msi\ballerina-windows-installer-x64-*.msi
+          path: w\target\msi\ballerina-windows-installer-x64-${{ needs.ubuntu-build.outputs.project-version }}.msi
       - name: Install Ballerina msi
         run: msiexec /i w\target\msi\ballerina-windows-installer-x64-${{ needs.ubuntu-build.outputs.project-version }}.msi /quiet /qr
         shell: cmd
