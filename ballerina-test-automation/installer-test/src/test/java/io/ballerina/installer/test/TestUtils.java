@@ -90,10 +90,12 @@ public class TestUtils {
 
         //Test `ballerina dist list`
         String actualOutput = executor.executeCommand("dist list", false, toolVersion);
-        Assert.assertTrue(actualOutput.contains("1.0.0"));
-        Assert.assertTrue(actualOutput.contains("1.1.0"));
-        Assert.assertTrue(actualOutput.contains("1.2.0"));
-        Assert.assertTrue(actualOutput.contains("slp1"));
+        Assert.assertTrue(actualOutput.contains("1.2.15"));
+        Assert.assertTrue(actualOutput.contains("1.2.20"));
+        Assert.assertTrue(actualOutput.contains("1.2.23"));
+        Assert.assertTrue(actualOutput.contains("slalpha5"));
+        Assert.assertTrue(actualOutput.contains("slbeta1"));
+        Assert.assertTrue(actualOutput.contains("slbeta6"));
 
         //Test `ballerina dist pull`
         executor.executeCommand("dist pull "
@@ -205,10 +207,12 @@ public class TestUtils {
      */
     public static void verifyDistList(Executor executor, String toolVersion) {
         String actualOutput = executor.executeCommand("dist list", false, toolVersion);
-        Assert.assertTrue(actualOutput.contains("1.0.0"));
-        Assert.assertTrue(actualOutput.contains("1.1.0"));
-        Assert.assertTrue(actualOutput.contains("1.2.0"));
-        Assert.assertTrue(actualOutput.contains("slp1"));
+        Assert.assertTrue(actualOutput.contains("1.2.15"));
+        Assert.assertTrue(actualOutput.contains("1.2.20"));
+        Assert.assertTrue(actualOutput.contains("1.2.23"));
+        Assert.assertTrue(actualOutput.contains("slalpha5"));
+        Assert.assertTrue(actualOutput.contains("slbeta1"));
+        Assert.assertTrue(actualOutput.contains("slbeta6"));
     }
 
     /**

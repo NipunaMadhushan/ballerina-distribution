@@ -42,8 +42,10 @@ public class UpdateToolTest {
 
     @Test(dataProvider = "getExecutors")
     public void testUpdateTool(Executor executor) throws InterruptedException {
-        executor.transferArtifacts();
-        executor.install();
+        if (!System.getProperty("BALLERINA_INSTALLED").equals("true")) {
+            executor.transferArtifacts();
+            executor.install();
+        }
 
         //Test dist list
         TestUtils.verifyDistList(executor, toolVersion);
@@ -58,7 +60,9 @@ public class UpdateToolTest {
         TestUtils.testDistCommands(executor, version, specVersion, latestToolVersion, previousVersion,
                 previousSpecVersion, previousVersionsLatestPatch, latestToolVersion);
 
-        executor.uninstall();
-        executor.cleanArtifacts();
+        if (!System.getProperty("BALLERINA_INSTALLED").equals("true")) {
+            executor.uninstall();
+            executor.cleanArtifacts();
+        }
     }
 }
