@@ -328,7 +328,7 @@ public class TestUtils {
             } else if (version.contains("preview")) {
                 return "slp" + version.replace("swan-lake-preview", "");
             }
-            return version.split("-")[0];
+            return version.split("-")[2];
         }
         return version;
     }
