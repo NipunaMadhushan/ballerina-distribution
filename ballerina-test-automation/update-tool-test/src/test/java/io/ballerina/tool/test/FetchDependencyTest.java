@@ -37,13 +37,17 @@ public class FetchDependencyTest {
 
     @Test(dataProvider = "getExecutors")
     public void testFetchDependency(Executor executor) throws InterruptedException {
-        executor.transferArtifacts();
-        executor.install();
+        if (!System.getProperty("BALLERINA_INSTALLED").equals("true")) {
+            executor.transferArtifacts();
+            executor.install();
+        }
 
         TestUtils.testInstallation(executor, version, specVersion, toolVersion, VERSION_DISPLAY_TEXT);
         TestUtils.testDependencyFetch(executor, toolVersion);
 
-        executor.uninstall();
-        executor.cleanArtifacts();
+        if (!System.getProperty("BALLERINA_INSTALLED").equals("true")) {
+            executor.uninstall();
+            executor.cleanArtifacts();
+        }
     }
 }

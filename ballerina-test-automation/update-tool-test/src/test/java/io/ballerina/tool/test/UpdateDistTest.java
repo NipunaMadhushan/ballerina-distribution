@@ -41,13 +41,17 @@ public class UpdateDistTest {
 
     @Test(dataProvider = "getExecutors")
     public void testDistCommands(Executor executor) throws InterruptedException {
-        executor.transferArtifacts();
-        executor.install();
+        if (!System.getProperty("BALLERINA_INSTALLED").equals("true")) {
+            executor.transferArtifacts();
+            executor.install();
+        }
 
         TestUtils.testDistCommands(executor, version, specVersion, toolVersion, previousVersion, previousSpecVersion,
                 previousVersionsLatestPatch, latestToolVersion);
 
-        executor.uninstall();
-        executor.cleanArtifacts();
+        if (!System.getProperty("BALLERINA_INSTALLED").equals("true")) {
+            executor.uninstall();
+            executor.cleanArtifacts();
+        }
     }
 }
