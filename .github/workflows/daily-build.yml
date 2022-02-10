@@ -35,7 +35,8 @@ jobs:
           packageUser: ${{ github.actor }}
           packagePAT: ${{ secrets.GITHUB_TOKEN }}
           devCentralToken: ${{ secrets.BALLERINA_DEV_CENTRAL_ACCESS_TOKEN }}
-        run: ./gradlew clean build --stacktrace --scan --console=plain --no-daemon --continue
+          TEST_MODE_ACTIVE: true
+        run: ./gradlew clean build --stacktrace --scan --console=plain --no-daemon --continue -x test
       - name: Create linux-deb
         id: run_installers_deb
         run: |
@@ -106,92 +107,97 @@ jobs:
           path: ballerina-${{ steps.project-version.outputs.sversion }}.zip.sha256
       - name: Install Ballerina DEB
         run: sudo dpkg -i installers/linux-deb/target/ballerina-*-linux-x64.deb
-      - name: Run Installer Tests
-        working-directory: ./ballerina-test-automation/installer-test
+#      - name: Run Installer Tests
+#        working-directory: ./ballerina-test-automation/installer-test
+#        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+      - name: Run Update Tool Tests
+        working-directory: ./ballerina-test-automation/update-tool-test
         run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
-      - name: Notify failure
-        if: ${{ failure() }}
-        run: |
-          curl -X POST \
-          'https://api.github.com/repos/ballerina-platform/ballerina-release/dispatches' \
-          -H 'Accept: application/vnd.github.v3+json' \
-          -H 'Authorization: Bearer ${{ secrets.BALLERINA_BOT_TOKEN }}' \
-          --data "{
-            \"event_type\": \"notify-build-failure\",
-            \"client_payload\": {
-              \"repoName\": \"ballerina-distribution\"
-            }
-          }"
-      - name: Checkout docker repo
-        uses: actions/checkout@v2
-        with:
-          repository: ballerina-platform/module-ballerina-docker
-          path: module-ballerina-docker
-      - name: Copy zip artifact
-        run: cp ballerina/build/distributions/ballerina-22*.zip module-ballerina-docker/base/docker/
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build the docker image
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: module-ballerina-docker/base/docker/
-          load: true
-          push: false
-          tags: ballerina/ballerina:nightly-test
-          build-args: |
-            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.sversion }}.zip
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'ballerina/ballerina:nightly-test'
-          format: 'table'
-          exit-code: '1'
-          timeout: "10m0s"
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: module-ballerina-docker/base/docker/
-          push: true
-          tags: ballerina/ballerina:nightly-${{ steps.version.outputs.version }}, ballerina/ballerina:nightly
-          build-args: |
-            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.sversion }}.zip
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-      - name: Copy deb artifact
-        run: cp installers/linux-deb/target/ballerina-*-linux-x64.deb module-ballerina-docker/base/devcontainer/
-      - name: Build the dev container docker image
-        id: docker_build_devcontainer
-        uses: docker/build-push-action@v2
-        with:
-          context: module-ballerina-docker/base/devcontainer/
-          load: true
-          push: false
-          tags: ballerina/ballerina-devcontainer:nightly-test
-          build-args: |
-            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.version }}-linux-x64.deb
-      - name: Run Trivy vulnerability scanner for dev container docker image
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'ballerina/ballerina-devcontainer:nightly-test'
-          format: 'table'
-          exit-code: '1'
-          timeout: "10m0s"
-      - name: Build and push dev container image
-        uses: docker/build-push-action@v2
-        with:
-          context: module-ballerina-docker/base/devcontainer/
-          push: true
-          tags: ballerina/ballerina-devcontainer:nightly
-          build-args: |
-            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.version }}-linux-x64.deb
+        env:
+          TEST_MODE_ACTIVE: true
+#      - name: Notify failure
+#        if: ${{ failure() }}
+#        run: |
+#          curl -X POST \
+#          'https://api.github.com/repos/ballerina-platform/ballerina-release/dispatches' \
+#          -H 'Accept: application/vnd.github.v3+json' \
+#          -H 'Authorization: Bearer ${{ secrets.BALLERINA_BOT_TOKEN }}' \
+#          --data "{
+#            \"event_type\": \"notify-build-failure\",
+#            \"client_payload\": {
+#              \"repoName\": \"ballerina-distribution\"
+#            }
+#          }"
+#      - name: Checkout docker repo
+#        uses: actions/checkout@v2
+#        with:
+#          repository: ballerina-platform/module-ballerina-docker
+#          path: module-ballerina-docker
+#      - name: Copy zip artifact
+#        run: cp ballerina/build/distributions/ballerina-22*.zip module-ballerina-docker/base/docker/
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v1
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v1
+#      - name: Login to DockerHub
+#        uses: docker/login-action@v1
+#        with:
+#          username: ${{ secrets.DOCKER_HUB_USER }}
+#          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+#      - name: Build the docker image
+#        id: docker_build
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: module-ballerina-docker/base/docker/
+#          load: true
+#          push: false
+#          tags: ballerina/ballerina:nightly-test
+#          build-args: |
+#            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.sversion }}.zip
+#      - name: Run Trivy vulnerability scanner
+#        uses: aquasecurity/trivy-action@master
+#        with:
+#          image-ref: 'ballerina/ballerina:nightly-test'
+#          format: 'table'
+#          exit-code: '1'
+#          timeout: "10m0s"
+#      - name: Build and push
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: module-ballerina-docker/base/docker/
+#          push: true
+#          tags: ballerina/ballerina:nightly-${{ steps.version.outputs.version }}, ballerina/ballerina:nightly
+#          build-args: |
+#            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.sversion }}.zip
+#      - name: Image digest
+#        run: echo ${{ steps.docker_build.outputs.digest }}
+#      - name: Copy deb artifact
+#        run: cp installers/linux-deb/target/ballerina-*-linux-x64.deb module-ballerina-docker/base/devcontainer/
+#      - name: Build the dev container docker image
+#        id: docker_build_devcontainer
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: module-ballerina-docker/base/devcontainer/
+#          load: true
+#          push: false
+#          tags: ballerina/ballerina-devcontainer:nightly-test
+#          build-args: |
+#            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.version }}-linux-x64.deb
+#      - name: Run Trivy vulnerability scanner for dev container docker image
+#        uses: aquasecurity/trivy-action@master
+#        with:
+#          image-ref: 'ballerina/ballerina-devcontainer:nightly-test'
+#          format: 'table'
+#          exit-code: '1'
+#          timeout: "10m0s"
+#      - name: Build and push dev container image
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: module-ballerina-docker/base/devcontainer/
+#          push: true
+#          tags: ballerina/ballerina-devcontainer:nightly
+#          build-args: |
+#            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.version }}-linux-x64.deb
     outputs:
       project-version: ${{ steps.project-version.outputs.version }}
 
@@ -212,6 +218,7 @@ jobs:
           packageUser: ${{ github.actor }}
           packagePAT: ${{ secrets.GITHUB_TOKEN }}
           devCentralToken: ${{ secrets.BALLERINA_DEV_CENTRAL_ACCESS_TOKEN }}
+          TEST_MODE_ACTIVE: true
         run: ./gradlew.bat clean build --stacktrace --scan --console=plain --no-daemon -x test
 
   ubuntu-rpm-installer-test:
@@ -227,6 +234,16 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
+      - name: Install Sudo
+        run: |
+          sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+          sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+          yum install sudo -y
+      - name: Get Sudo User Name
+        id: sudo-user
+        run: |
+          SUDO_USER=$(echo $HOME)
+          echo "::set-output name=SUDO_USER::$SUDO_USER"
       - name: Download Ballerina rpm Installer
         uses: actions/download-artifact@v2
         with:
@@ -234,11 +251,50 @@ jobs:
       - name: Install Ballerina RPM
         run: |
           rpm -ivh ballerina-*-linux-x64.rpm
-      - name: Run Installer Tests
-        working-directory: ./ballerina-test-automation/installer-test
+      - name: Check Ballerina Version
+        run: bal -v
+#      - name: Run Installer Tests
+#        working-directory: ./ballerina-test-automation/installer-test
+#        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+#      - name: Check Ballerina File 1
+#        run: |
+#          cd $HOME
+#          echo ~/.ballerina
+#      - name: Check Ballerina File 2
+#        run: |
+#          cd $HOME
+#          find "$(cd ..; pwd)" -name ".ballerina"
+#      - name: Check Ballerina File 3
+#        run: |
+#          echo ~/.ballerina
+#      - name: Check Ballerina File 4
+#        run: |
+#          find "$(cd ..; pwd)" -name ".ballerina"
+      - name: File Dir
         run: |
-          bal -v
+          cd $SUDO_USER
+          ls -a
+          echo "---------"
+          cd .ballerina
+          ls -a
+        env:
+          SUDO_USER: ${{ steps.sudo-user.outputs.SUDO_USER }}
+      - name: File Dir 2
+        run: |
+          cd /__t/
+          ls -a
+      - name: File Dir 3
+        run: |
+          cd /__w/
+          ls -a
+      - name: Run Update Tool Tests
+        working-directory: ./ballerina-test-automation/update-tool-test
+        run: |
+          export HOME=/github/home
           ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+        env:
+          SUDO_USER: ${{ steps.sudo-user.outputs.SUDO_USER }}
+          TEST_MODE_ACTIVE: true
 
   macos-installer-build:
 
@@ -273,9 +329,14 @@ jobs:
           path: installers/mac/target/pkg/ballerina-*-macos-x64.pkg
       - name: Install Ballerina PKG
         run: sudo installer -pkg installers/mac/target/pkg/ballerina-*-macos-x64.pkg -target /
-      - name: Run Installer Tests
-        working-directory: ./ballerina-test-automation/installer-test
+#      - name: Run Installer Tests
+#        working-directory: ./ballerina-test-automation/installer-test
+#        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+      - name: Run Update Tool Tests
+        working-directory: ./ballerina-test-automation/update-tool-test
         run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+        env:
+          TEST_MODE_ACTIVE: true
 
   windows-installer-build:
 
@@ -319,11 +380,18 @@ jobs:
       - name: Install Ballerina msi
         run: msiexec /i w\target\msi\ballerina-${{ needs.ubuntu-build.outputs.project-version }}-windows-x64.msi /quiet /qr
         shell: cmd
-      - name: Run Installer Tests
-        working-directory: .\ballerina-test-automation\installer-test
+#      - name: Run Installer Tests
+#        working-directory: .\ballerina-test-automation\installer-test
+#        run: |
+#          $env:Path += ";C:\Program Files\Ballerina\bin"
+#          .\..\gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+      - name: Run Update Tool Tests
+        working-directory: .\ballerina-test-automation\update-tool-test
         run: |
           $env:Path += ";C:\Program Files\Ballerina\bin"
           .\..\gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+        env:
+          TEST_MODE_ACTIVE: true
 
   trigger-notifications:
 
