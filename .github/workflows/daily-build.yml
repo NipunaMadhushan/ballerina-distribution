@@ -8,13 +8,19 @@ on:
 jobs:
   ubuntu-build:
 
+    strategy:
+      matrix:
+        branch:
+          - master
+          - 2201.0.x
+
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          ref: 2201.0.x
+          ref: ${{ matrix.branch }}
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
@@ -60,52 +66,52 @@ jobs:
       - name: Archive Ballerina ZIP
         uses: actions/upload-artifact@v2
         with:
-          name: Ballerina ZIP
+          name: Ballerina ZIP (${{ matrix.branch }})
           path: ballerina/build/distributions/ballerina-*-swan-lake.zip
       - name: Archive Ballerina Short Name ZIP
         uses: actions/upload-artifact@v2
         with:
-          name: Ballerina Short Name ZIP
+          name: Ballerina Short Name ZIP (${{ matrix.branch }})
           path: ballerina/build/distributions/ballerina-22*.zip
       - name: Archive Linux deb
         uses: actions/upload-artifact@v2
         with:
-          name: Linux Installer deb
+          name: Linux Installer deb (${{ matrix.branch }})
           path: installers/linux-deb/target/ballerina-*-linux-x64.deb
       - name: Archive Linux rpm
         uses: actions/upload-artifact@v2
         with:
-          name: Linux Installer rpm
+          name: Linux Installer rpm (${{ matrix.branch }})
           path: installers/linux-rpm/rpmbuild/RPMS/x86_64/ballerina-*-linux-x64.rpm
       - name: Archive MacOS installer ZIP
         uses: actions/upload-artifact@v2
         with:
-          name: MacOS installer ZIP
+          name: MacOS Installer ZIP (${{ matrix.branch }})
           path: ballerina/build/distributions/ballerina-*-macos.zip
       - name: Archive Windows Installer ZIP
         uses: actions/upload-artifact@v2
         with:
-          name: Windows Installer ZIP
+          name: Windows Installer ZIP (${{ matrix.branch }})
           path: ballerina/build/distributions/ballerina-*-windows.zip
       - name: Archive Linux deb Hashes
         uses: actions/upload-artifact@v2
         with:
-          name: Linux deb Hashes
+          name: Linux deb Hashes (${{ matrix.branch }})
           path: ballerina-${{ steps.project-version.outputs.version }}-linux-x64.deb.sha256
       - name: Archive Linux rpm Hashes
         uses: actions/upload-artifact@v2
         with:
-          name: Linux rpm Hashes
+          name: Linux rpm Hashes (${{ matrix.branch }})
           path: ballerina-${{ steps.project-version.outputs.version }}-linux-x64.rpm.sha256
       - name: Archive Ballerina Zip Hashes
         uses: actions/upload-artifact@v2
         with:
-          name: Ballerina Zip Hashes
+          name: Ballerina Zip Hashes (${{ matrix.branch }})
           path: ballerina-${{ steps.project-version.outputs.version }}.zip.sha256
       - name: Archive Ballerina Short Name Hashes
         uses: actions/upload-artifact@v2
         with:
-          name: Ballerina Short Name Hashes
+          name: Ballerina Short Name Hashes (${{ matrix.branch }})
           path: ballerina-${{ steps.project-version.outputs.sversion }}.zip.sha256
       - name: Install Ballerina DEB
         run: sudo dpkg -i installers/linux-deb/target/ballerina-*-linux-x64.deb
@@ -128,22 +134,28 @@ jobs:
             }
           }"
       - name: Checkout docker repo
+        if: ${{ matrix.branch }} == '2201.0.x'
         uses: actions/checkout@v2
         with:
           repository: ballerina-platform/module-ballerina-docker
           path: module-ballerina-docker
       - name: Copy zip artifact
+        if: ${{ matrix.branch }} == '2201.0.x'
         run: cp ballerina/build/distributions/ballerina-22*.zip module-ballerina-docker/base/docker/
       - name: Set up QEMU
+        if: ${{ matrix.branch }} == '2201.0.x'
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
+        if: ${{ matrix.branch }} == '2201.0.x'
         uses: docker/setup-buildx-action@v1
       - name: Login to DockerHub
+        if: ${{ matrix.branch }} == '2201.0.x'
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Build the docker image
+        if: ${{ matrix.branch }} == '2201.0.x'
         id: docker_build
         uses: docker/build-push-action@v2
         with:
@@ -154,6 +166,7 @@ jobs:
           build-args: |
             BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.sversion }}.zip
       - name: Run Trivy vulnerability scanner
+        if: ${{ matrix.branch }} == '2201.0.x'
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'ballerina/ballerina:nightly-test'
@@ -169,10 +182,12 @@ jobs:
           build-args: |
             BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.sversion }}.zip
       - name: Image digest
+        if: ${{ matrix.branch }} == '2201.0.x'
         run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Copy deb artifact
         run: cp installers/linux-deb/target/ballerina-*-linux-x64.deb module-ballerina-docker/base/devcontainer/
       - name: Build the dev container docker image
+        if: ${{ matrix.branch }} == '2201.0.x'
         id: docker_build_devcontainer
         uses: docker/build-push-action@v2
         with:
@@ -183,6 +198,7 @@ jobs:
           build-args: |
             BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.version }}-linux-x64.deb
       - name: Run Trivy vulnerability scanner for dev container docker image
+        if: ${{ matrix.branch }} == '2201.0.x'
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'ballerina/ballerina-devcontainer:nightly-test'
@@ -190,6 +206,7 @@ jobs:
           timeout: "10m0s"
           ignore-unfixed: true
       - name: Build and push dev container image
+        if: ${{ matrix.branch }} == '2201.0.x'
         uses: docker/build-push-action@v2
         with:
           context: module-ballerina-docker/base/devcontainer/
@@ -202,13 +219,19 @@ jobs:
 
   windows-build:
 
+    strategy:
+      matrix:
+        branch:
+          - master
+          - 2201.0.x
+
     runs-on: windows-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          ref: 2201.0.x
+          ref: ${{ matrix.branch }}
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
@@ -223,6 +246,13 @@ jobs:
         run: ./gradlew.bat clean build --stacktrace --scan --console=plain --no-daemon -x test
 
   ubuntu-rpm-installer-test:
+
+    strategy:
+      matrix:
+        branch:
+          - master
+          - 2201.0.x
+
     needs: ubuntu-build
     runs-on: ubuntu-latest
     container: centos:latest
@@ -231,7 +261,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          ref: 2201.0.x
+          ref: ${{ matrix.branch }}
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
@@ -240,19 +270,23 @@ jobs:
       - name: Download Ballerina rpm Installer
         uses: actions/download-artifact@v2
         with:
-          name: Linux Installer rpm
+          name: Linux Installer rpm (${{ matrix.branch }})
       - name: Install Ballerina RPM
         run: |
           rpm -ivh ballerina-*-linux-x64.rpm
       - name: Run Installer Tests
         working-directory: ./ballerina-test-automation/installer-test
-        run: |
-          bal -v
-          ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
         env:
           TEST_MODE_ACTIVE: true
 
   macos-installer-build:
+
+    strategy:
+      matrix:
+        branch:
+          - master
+          - 2201.0.x
 
     needs: ubuntu-build
     runs-on: macos-latest
@@ -261,11 +295,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          ref: 2201.0.x
+          ref: ${{ matrix.branch }}
       - name: Download MacOS Intaller Zip
         uses: actions/download-artifact@v2
         with:
-          name: MacOS installer ZIP
+          name: MacOS Installer ZIP (${{ matrix.branch }})
       - name: Create macos-pkg
         id: run_installers_pkg
         run: |
@@ -278,12 +312,12 @@ jobs:
       - name: Archive MacOS pkg Hashes
         uses: actions/upload-artifact@v2
         with:
-          name: MacOS pkg Hashes
+          name: MacOS pkg Hashes (${{ matrix.branch }})
           path: ballerina-${{ needs.ubuntu-build.outputs.project-version }}-macos-x64.pkg.sha256
       - name: Archive MacOS pkg
         uses: actions/upload-artifact@v2
         with:
-          name: MacOS Installer pkg
+          name: MacOS Installer pkg (${{ matrix.branch }})
           path: installers/mac/target/pkg/ballerina-*-macos-x64.pkg
       - name: Install Ballerina PKG
         run: sudo installer -pkg installers/mac/target/pkg/ballerina-*-macos-x64.pkg -target /
@@ -295,6 +329,12 @@ jobs:
 
   windows-installer-build:
 
+    strategy:
+      matrix:
+        branch:
+          - master
+          - 2201.0.x
+
     needs: ubuntu-build
     runs-on: windows-latest
 
@@ -302,7 +342,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
-          ref: 2201.0.x
+          ref: ${{ matrix.branch }}
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '2.1.x'
@@ -311,7 +351,7 @@ jobs:
       - name: Download Windows Intaller Zip
         uses: actions/download-artifact@v2
         with:
-          name: Windows Installer ZIP
+          name: Windows Installer ZIP (${{ matrix.branch }})
       - name: Create windows-msi
         id: run_installers_msi
         run: |
@@ -327,12 +367,12 @@ jobs:
       - name: Archive Windows msi Hashes
         uses: actions/upload-artifact@v2
         with:
-          name: Windows msi Hashes
+          name: Windows msi Hashes (${{ matrix.branch }})
           path: ballerina-${{ needs.ubuntu-build.outputs.project-version }}-windows-x64.msi.sha256
       - name: Archive Windows msi
         uses: actions/upload-artifact@v2
         with:
-          name: Windows Installer msi
+          name: Windows Installer msi (${{ matrix.branch }})
           path: w\target\msi\ballerina-*-windows-x64.msi
       - name: Install Ballerina msi
         run: msiexec /i w\target\msi\ballerina-${{ needs.ubuntu-build.outputs.project-version }}-windows-x64.msi /quiet /qr
