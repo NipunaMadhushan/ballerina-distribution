@@ -10,9 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        branch:
-          - master
-          - 2201.0.x
+        branch: [master, 2201.0.x]
 
     runs-on: ubuntu-latest
 
@@ -113,13 +111,13 @@ jobs:
         with:
           name: Ballerina Short Name Hashes (${{ matrix.branch }})
           path: ballerina-${{ steps.project-version.outputs.sversion }}.zip.sha256
-      - name: Install Ballerina DEB
-        run: sudo dpkg -i installers/linux-deb/target/ballerina-*-linux-x64.deb
-      - name: Run Installer Tests
-        working-directory: ./ballerina-test-automation/installer-test
-        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
-        env:
-          TEST_MODE_ACTIVE: true
+#      - name: Install Ballerina DEB
+#        run: sudo dpkg -i installers/linux-deb/target/ballerina-*-linux-x64.deb
+#      - name: Run Installer Tests
+#        working-directory: ./ballerina-test-automation/installer-test
+#        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+#        env:
+#          TEST_MODE_ACTIVE: true
       - name: Notify failure
         if: ${{ failure() }}
         run: |
@@ -221,9 +219,7 @@ jobs:
 
     strategy:
       matrix:
-        branch:
-          - master
-          - 2201.0.x
+        branch: [master, 2201.0.x]
 
     runs-on: windows-latest
 
@@ -249,9 +245,7 @@ jobs:
 
     strategy:
       matrix:
-        branch:
-          - master
-          - 2201.0.x
+        branch: [master, 2201.0.x]
 
     needs: ubuntu-build
     runs-on: ubuntu-latest
@@ -284,9 +278,7 @@ jobs:
 
     strategy:
       matrix:
-        branch:
-          - master
-          - 2201.0.x
+        branch: [master, 2201.0.x]
 
     needs: ubuntu-build
     runs-on: macos-latest
@@ -331,9 +323,7 @@ jobs:
 
     strategy:
       matrix:
-        branch:
-          - master
-          - 2201.0.x
+        branch: [master, 2201.0.x]
 
     needs: ubuntu-build
     runs-on: windows-latest
