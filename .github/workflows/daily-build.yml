@@ -9,6 +9,7 @@ jobs:
   ubuntu-build:
 
     strategy:
+      fail-fast: false
       matrix:
         branch: [master, 2201.0.x]
 
