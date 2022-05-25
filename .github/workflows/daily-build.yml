@@ -219,6 +219,7 @@ jobs:
   windows-build:
 
     strategy:
+      fail-fast: false
       matrix:
         branch: [master, 2201.0.x]
 
@@ -245,6 +246,7 @@ jobs:
   ubuntu-rpm-installer-test:
 
     strategy:
+      fail-fast: false
       matrix:
         branch: [master, 2201.0.x]
 
@@ -278,6 +280,7 @@ jobs:
   macos-installer-build:
 
     strategy:
+      fail-fast: false
       matrix:
         branch: [master, 2201.0.x]
 
@@ -323,6 +326,7 @@ jobs:
   windows-installer-build:
 
     strategy:
+      fail-fast: false
       matrix:
         branch: [master, 2201.0.x]
 
