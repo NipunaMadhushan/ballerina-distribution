@@ -326,7 +326,7 @@ jobs:
       - name: Generate Hashes
         run: |
           openssl dgst -sha256 -out ballerina-${{ needs.ubuntu-build.outputs.project-version }}-windows-x64.msi.sha256 w\target\msi\ballerina-*-windows-x64.msi
-      - name: Archive Windows msi Hashes
+      - name: Archive Windows MSI Hashes
         uses: actions/upload-artifact@v2
         with:
           name: Windows msi Hashes
