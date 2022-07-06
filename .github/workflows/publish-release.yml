@@ -44,7 +44,7 @@ jobs:
       - name: Publish artifact
         run: |
           mvn --version
-          mvn -B -s settings.xml release:prepare release:perform -B -Darguments="-Dmaven.test.skip=true" -P \
+          mvn -e -B -s settings.xml release:prepare release:perform -B -Darguments="-Dmaven.test.skip=true" -P \
           wso2-release -DreleaseVersion=$VERSION -Dtag=$RELEASE_TAG -DdevelopmentVersion=$NEXT_DEV_VERSION
         env:
           GITHUB_TOKEN: ${{ secrets.BALLERINA_BOT_TOKEN }}
