@@ -2,15 +2,6 @@ name: Publish release
 
 on:
   workflow_dispatch:
-    inputs:
-      isPreRelease:
-        description: 'Tag created is a pre-release tag'
-        required: true
-        default: 'false'
-      preReleaseSuffix:
-        description: 'The text that will be suffixed to the Git tag. e.g., rc1'
-        required: false
-        default: ''
 
 jobs:
   publish-release:
