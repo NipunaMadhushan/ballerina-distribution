@@ -77,6 +77,6 @@ jobs:
 
 #mvn -s settings.xml versions:set -DnewVersion=$RELEASE_VERSION
 #mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec
-mvn -e -B -s settings.xml release:prepare release:perform -B -Darguments="-Dmaven.test.skip=true" -P \
-wso2-release -DreleaseVersion=1.2.29 -Dtag=$RELEASE_TAG -DdevelopmentVersion=1.2.30-SNAPSHOT
+#mvn -e -B -s settings.xml release:prepare release:perform -B -Darguments="-Dmaven.test.skip=true" -P \
+#wso2-release -DreleaseVersion=1.2.29 -Dtag=$RELEASE_TAG -DdevelopmentVersion=1.2.30-SNAPSHOT
 
