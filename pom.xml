@@ -82,77 +82,77 @@
                 <checksumPolicy>ignore</checksumPolicy>
             </releases>
         </repository>
-<!--        <repository>-->
-<!--            <id>wso2.snapshots</id>-->
-<!--            <name>WSO2 Snapshot Repository</name>-->
-<!--            <url>https://maven.wso2.org/nexus/content/repositories/snapshots/</url>-->
-<!--            <snapshots>-->
-<!--                <enabled>true</enabled>-->
-<!--                <updatePolicy>daily</updatePolicy>-->
-<!--            </snapshots>-->
+        <repository>
+            <id>wso2.snapshots</id>
+            <name>WSO2 Snapshot Repository</name>
+            <url>https://maven.wso2.org/nexus/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
 <!--            <releases>-->
 <!--                <enabled>false</enabled>-->
 <!--            </releases>-->
-<!--        </repository>-->
-<!--        <repository>-->
-<!--            <id>wso2-nexus</id>-->
-<!--            <name>WSO2 internal Repository</name>-->
-<!--            <url>https://maven.wso2.org/nexus/content/groups/wso2-public/</url>-->
+        </repository>
+        <repository>
+            <id>wso2-nexus</id>
+            <name>WSO2 internal Repository</name>
+            <url>https://maven.wso2.org/nexus/content/groups/wso2-public/</url>
 <!--            <releases>-->
 <!--                <enabled>true</enabled>-->
 <!--                <updatePolicy>daily</updatePolicy>-->
 <!--                <checksumPolicy>ignore</checksumPolicy>-->
 <!--            </releases>-->
-<!--        </repository>-->
+        </repository>
         <repository>
             <id>wso2.stage</id>
             <name>WSO2 Stage Repository</name>
             <url>https://maven.wso2.org/nexus/content/repositories/orgballerinalang-1696/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--                <updatePolicy>daily</updatePolicy>-->
+<!--                <checksumPolicy>ignore</checksumPolicy>-->
+<!--            </releases>-->
         </repository>
         <repository>
             <id>wso2.docker.stage</id>
             <name>WSO2 Stage Repository</name>
             <url>https://maven.wso2.org/nexus/content/repositories/orgballerinaxdocker-1319/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--                <updatePolicy>daily</updatePolicy>-->
+<!--                <checksumPolicy>ignore</checksumPolicy>-->
+<!--            </releases>-->
         </repository>
         <repository>
             <id>wso2.kubernetes.stage</id>
             <name>WSO2 Stage Repository</name>
             <url>https://maven.wso2.org/nexus/content/repositories/orgballerinaxkubernetes-1294/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--                <updatePolicy>daily</updatePolicy>-->
+<!--                <checksumPolicy>ignore</checksumPolicy>-->
+<!--            </releases>-->
         </repository>
         <repository>
             <id>wso2.awslambda.stage</id>
             <name>WSO2 Stage Repository</name>
             <url>https://maven.wso2.org/nexus/content/repositories/orgballerinaxawslambda-1192/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--                <updatePolicy>daily</updatePolicy>-->
+<!--                <checksumPolicy>ignore</checksumPolicy>-->
+<!--            </releases>-->
         </repository>
         <repository>
             <id>wso2.azurefunctions.stage</id>
             <name>WSO2 Stage Repository</name>
             <url>https://maven.wso2.org/nexus/content/repositories/orgballerinaxazurefunctions-1047/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--                <updatePolicy>daily</updatePolicy>-->
+<!--                <checksumPolicy>ignore</checksumPolicy>-->
+<!--            </releases>-->
         </repository>
     </repositories>
 
