@@ -363,7 +363,7 @@
 
     <profiles>
         <profile>
-            <id>wso2-release</id>
+            <id>wso2-release2</id>
             <build>
                 <plugins>
                     <!-- Create a source-release artifact that contains the fully buildable
