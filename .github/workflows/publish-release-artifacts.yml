@@ -32,7 +32,7 @@ jobs:
         id: set-version
         run: |
           RELEASE_VERSION=${{ github.event.inputs.release_version }}
-          VERSION=$($RELEASE_VERSION | cut -d- -f1)
+          VERSION=$(cut -d- -f1 <<< $RELEASE_VERSION)
           CODE_NAME="swan-lake"
           DISPLAY_VERSION="${{ github.event.inputs.display_version }}"
 
