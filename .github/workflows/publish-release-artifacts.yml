@@ -7,10 +7,6 @@ on:
         description: 'Release Version e.g., 2201.1.1, 2201.1.1-rc1'
         default: '2201.1.1'
         required: true
-      display_version:
-        description: 'Display Version'
-        default: '2201.1.1 (Swan Lake Update 1)'
-        required: true
 
 jobs:
   publish-artifacts:
@@ -34,10 +30,11 @@ jobs:
           RELEASE_VERSION=${{ github.event.inputs.release_version }}
           VERSION=$(cut -d- -f1 <<< $RELEASE_VERSION)
           CODE_NAME="swan-lake"
-          DISPLAY_VERSION="${{ github.event.inputs.display_version }}"
-
           TAGGED_VERSION=$RELEASE_VERSION
           LONG_VERSION=$VERSION-$CODE_NAME
+
+          PATCH_NUMBER=$(cut -d'.' -f3 <<< $VERSION)
+          DISPLAY_VERSION="$VERSION (Swan Lake Update $PATCH_NUMBER)"
 
           echo VERSION=$VERSION >> $GITHUB_ENV
           echo LONG_VERSION=$LONG_VERSION >> $GITHUB_ENV
