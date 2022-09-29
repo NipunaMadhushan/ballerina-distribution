@@ -228,6 +228,8 @@ jobs:
       - name: Generate Hashes
         run: |
           openssl dgst -sha256 -out ballerina-macos-installer-x64-${{ needs.publish-release.outputs.project-version }}.pkg.sha256 installers/mac/target/pkg/ballerina-macos-installer-x64-${{ needs.publish-release.outputs.project-version }}.pkg
+      - name: Echo Release URL
+        run: echo ${{ needs.publish-release.outputs.upload-asset-url }}
       - name: Upload MacOS pkg Installer
         uses: actions/upload-release-asset@v1
         env:
