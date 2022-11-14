@@ -57,7 +57,7 @@ public class ProjectTest {
             executor.install();
         }
 
-        TestUtils.testBBEs(executor, version, specVersion, toolVersion);
+//        TestUtils.testBBEs(executor, version, specVersion, toolVersion);
 
         if (!System.getProperty("BALLERINA_INSTALLED").equals("true")) {
             executor.uninstall();
