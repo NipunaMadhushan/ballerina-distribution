@@ -52,6 +52,9 @@ artifacts {
 }
 
 test {
+    onlyIf {
+        project.hasProperty("installerTestsEnabled")
+    }
     useTestNG()
     def ballerinaVersion = project.ballerinaLangVersion.tokenize("-")[0]
     options.suites('src/test/resources/testng.xml')
