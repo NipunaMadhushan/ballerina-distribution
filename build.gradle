@@ -44,7 +44,7 @@ ext {
 
 gradle.taskGraph.whenReady {
     gradle.taskGraph.allTasks.each {
-        if(it.project.name == project("")) {
+        if(it.project.name == project(':installer-test')) {
             it.onlyIf { false }
         }
     }
