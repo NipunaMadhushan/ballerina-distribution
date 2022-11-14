@@ -112,7 +112,7 @@ jobs:
         run: sudo dpkg -i installers/linux-deb/target/ballerina-*-linux-x64.deb
       - name: Run Installer Tests
         working-directory: ./ballerina-test-automation/installer-test
-        run: ./../../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+        run: ./../../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true -PinstallerTestsEnabled
         env:
           TEST_MODE_ACTIVE: true
 #      - name: Notify failure

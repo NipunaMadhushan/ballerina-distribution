@@ -28,9 +28,11 @@ include 'dist-repo-builder'
 include 'build-time-tests'
 include 'cache-generator'
 include 'config:checkstyle'
-include ':test-automation'
-include ':installer-test'
-include ':update-tool-test'
+if (project.hasProperty("installerTestsEnabled")) {
+    include ':test-automation'
+    include ':installer-test'
+    include ':update-tool-test'
+}
 
 project(':ballerina').projectDir = "$rootDir/ballerina" as File
 project(':ballerina-distribution-test').projectDir = "$rootDir/ballerina-test" as File
