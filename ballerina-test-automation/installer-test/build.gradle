@@ -52,23 +52,22 @@ artifacts {
 }
 
 test {
-    onlyIf {
-        project.hasProperty("installerTestsEnabled")
-    }
-    useTestNG()
-    def ballerinaVersion = project.ballerinaLangVersion.tokenize("-")[0]
-    options.suites('src/test/resources/testng.xml')
-    systemProperty 'BALLERINA_VERSION', 'swan-lake-' + ballerinaVersion
-    systemProperty 'SPEC_VERSION', project.specVersion
-    systemProperty 'VERSION_DISPLAY_TEXT', ballerinaVersion
-    systemProperty 'LATEST_TOOL_VERSION', project.ballerinaCommandVersion
+    if (project.hasProperty("installerTestsEnabled")) {
+        useTestNG()
+        def ballerinaVersion = project.ballerinaLangVersion.tokenize("-")[0]
+        options.suites('src/test/resources/testng.xml')
+        systemProperty 'BALLERINA_VERSION', 'swan-lake-' + ballerinaVersion
+        systemProperty 'SPEC_VERSION', project.specVersion
+        systemProperty 'VERSION_DISPLAY_TEXT', ballerinaVersion
+        systemProperty 'LATEST_TOOL_VERSION', project.ballerinaCommandVersion
 
-    if (System.getProperty('ballerinaInstalled')) {
-        systemProperty 'BALLERINA_INSTALLED', System.getProperty('ballerinaInstalled')
-    } else {
-        systemProperty 'BALLERINA_INSTALLED', "false"
-    }
-    testLogging {
-        showStandardStreams = true
+        if (System.getProperty('ballerinaInstalled')) {
+            systemProperty 'BALLERINA_INSTALLED', System.getProperty('ballerinaInstalled')
+        } else {
+            systemProperty 'BALLERINA_INSTALLED', "false"
+        }
+        testLogging {
+            showStandardStreams = true
+        }
     }
 }
