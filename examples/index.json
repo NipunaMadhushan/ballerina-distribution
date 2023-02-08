@@ -961,13 +961,6 @@
         "isLearnByExample": true
       },
       {
-        "name": "Convert from JSON to user-defined type",
-        "url": "convert-from-json-to-user-defined-type",
-        "verifyBuild": true,
-        "verifyOutput": true,
-        "isLearnByExample": true
-      },
-      {
         "name": "Cast JSON to user-defined type",
         "url": "casting-json-to-user-defined-type",
         "verifyBuild": true,
