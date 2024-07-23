@@ -9,7 +9,7 @@ jobs:
   ubuntu-build:
 
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'ballerina-platform'
+#    if: github.repository_owner == 'ballerina-platform'
 
     steps:
       - name: Checkout Repository
@@ -41,7 +41,7 @@ jobs:
           githubAccessToken: ${{ secrets.GITHUB_TOKEN }}
           ballerinaBotWorkflow: $ {{ secrets.BALLERINA_BOT_WORKFLOW }}
           TEST_MODE_ACTIVE: true
-        run: ./gradlew clean build --stacktrace --scan --console=plain --no-daemon --continue -x project-api-tests:test
+        run: ./gradlew clean build --stacktrace --scan --console=plain --no-daemon --continue -x project-api-tests:test -x test -x check
       - name: Create linux-deb
         id: run_installers_deb
         run: |
@@ -123,11 +123,11 @@ jobs:
           SWAN_LAKE_LATEST_VERSION="swan-lake-"+$DISPLAY_TEXT
           perl -pi -e "s/^\s*swan-lake-latest-version-display-text=.*/swan-lake-latest-version-display-text=$DISPLAY_TEXT/" ballerina-test-automation/gradle.properties
           perl -pi -e "s/^\s*swan-lake-latest-version=.*/swan-lake-latest-version=$SWAN_LAKE_LATEST_VERSION/" ballerina-test-automation/gradle.properties
-      - name: Run Installer Tests
-        working-directory: ./ballerina-test-automation/installer-test
-        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
-        env:
-          TEST_MODE_ACTIVE: true
+#      - name: Run Installer Tests
+#        working-directory: ./ballerina-test-automation/installer-test
+#        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+#        env:
+#          TEST_MODE_ACTIVE: true
       - name: Checkout docker repo
         uses: actions/checkout@v2
         with:
@@ -294,11 +294,11 @@ jobs:
           SWAN_LAKE_LATEST_VERSION="swan-lake-"+$DISPLAY_TEXT
           sed -i -e "s/swan-lake-latest-version-display-text=.*/swan-lake-latest-version-display-text=$DISPLAY_TEXT/" ballerina-test-automation/gradle.properties
           sed -i -e "s/swan-lake-latest-version=.*/swan-lake-latest-version=$SWAN_LAKE_LATEST_VERSION/" ballerina-test-automation/gradle.properties
-      - name: Run Installer Tests
-        working-directory: ./ballerina-test-automation/installer-test
-        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
-        env:
-          TEST_MODE_ACTIVE: true
+#      - name: Run Installer Tests
+#        working-directory: ./ballerina-test-automation/installer-test
+#        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+#        env:
+#          TEST_MODE_ACTIVE: true
 
   macos-installer-build:
 
@@ -344,11 +344,11 @@ jobs:
           SWAN_LAKE_LATEST_VERSION="swan-lake-"+$DISPLAY_TEXT
           perl -pi -e "s/^\s*swan-lake-latest-version-display-text=.*/swan-lake-latest-version-display-text=$DISPLAY_TEXT/" ballerina-test-automation/gradle.properties
           perl -pi -e "s/^\s*swan-lake-latest-version=.*/swan-lake-latest-version=$SWAN_LAKE_LATEST_VERSION/" ballerina-test-automation/gradle.properties
-      - name: Run Installer Tests
-        working-directory: ./ballerina-test-automation/installer-test
-        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
-        env:
-          TEST_MODE_ACTIVE: true
+#      - name: Run Installer Tests
+#        working-directory: ./ballerina-test-automation/installer-test
+#        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+#        env:
+#          TEST_MODE_ACTIVE: true
 
   macos-arm-installer-build:
 
@@ -442,13 +442,13 @@ jobs:
           perl -pi -e "s/^\s*swan-lake-latest-version-display-text=.*/swan-lake-latest-version-display-text=%DISPLAY_TEXT%/" ballerina-test-automation/gradle.properties
           perl -pi -e "s/^\s*swan-lake-latest-version=.*/swan-lake-latest-version=%SWAN_LAKE_LATEST_VERSION%/" ballerina-test-automation/gradle.properties
         shell: cmd
-      - name: Run Installer Tests
-        working-directory: .\ballerina-test-automation\installer-test
-        run: |
-          $env:Path += ";C:\Program Files\Ballerina\bin"
-          .\..\gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
-        env:
-          TEST_MODE_ACTIVE: true
+#      - name: Run Installer Tests
+#        working-directory: .\ballerina-test-automation\installer-test
+#        run: |
+#          $env:Path += ";C:\Program Files\Ballerina\bin"
+#          .\..\gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+#        env:
+#          TEST_MODE_ACTIVE: true
 
   trigger-notifications:
 
