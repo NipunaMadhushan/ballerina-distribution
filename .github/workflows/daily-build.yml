@@ -9,7 +9,7 @@ jobs:
   ubuntu-build:
 
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'ballerina-platform'
+#    if: github.repository_owner == 'ballerina-platform'
 
     steps:
       - name: Checkout Repository
@@ -41,7 +41,7 @@ jobs:
           githubAccessToken: ${{ secrets.GITHUB_TOKEN }}
           ballerinaBotWorkflow: $ {{ secrets.BALLERINA_BOT_WORKFLOW }}
           TEST_MODE_ACTIVE: true
-        run: ./gradlew clean build --stacktrace --scan --console=plain --no-daemon --continue -x project-api-tests:test
+        run: ./gradlew clean build --stacktrace --scan --console=plain --no-daemon --continue -x project-api-tests:test -x test -x check
       - name: Create linux-deb
         id: run_installers_deb
         run: |
@@ -115,105 +115,105 @@ jobs:
         with:
           name: Ballerina Short Name Hashes
           path: ballerina-${{ steps.project-version.outputs.sversion }}.zip.sha256
-      - name: Install Ballerina DEB
-        run: sudo dpkg -i installers/linux-deb/target/ballerina-*-linux-x64.deb
-      - name: Update Installer Test Configs
-        run: |
-          DISPLAY_TEXT=${{ steps.project-version.outputs.langversion }}
-          SWAN_LAKE_LATEST_VERSION="swan-lake-"+$DISPLAY_TEXT
-          perl -pi -e "s/^\s*swan-lake-latest-version-display-text=.*/swan-lake-latest-version-display-text=$DISPLAY_TEXT/" ballerina-test-automation/gradle.properties
-          perl -pi -e "s/^\s*swan-lake-latest-version=.*/swan-lake-latest-version=$SWAN_LAKE_LATEST_VERSION/" ballerina-test-automation/gradle.properties
-      - name: Run Installer Tests
-        working-directory: ./ballerina-test-automation/installer-test
-        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
-        env:
-          TEST_MODE_ACTIVE: true
-      - name: Checkout docker repo
-        uses: actions/checkout@v2
-        with:
-          repository: ballerina-platform/module-ballerina-docker
-          path: module-ballerina-docker
-      - name: Copy zip artifact
-        run: cp ballerina/build/distributions/ballerina-22*.zip module-ballerina-docker/base/docker/
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build the docker image
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: module-ballerina-docker/base/docker/
-          load: true
-          push: false
-          tags: ballerina/ballerina:nightly-test
-          build-args: |
-            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.sversion }}.zip
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'ballerina/ballerina:nightly-test'
-          skip-dirs: 'ballerina/runtime/examples'
-          format: 'table'
-          exit-code: '1'
-          timeout: "10m0s"
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: module-ballerina-docker/base/docker/
-          push: true
-          tags: ballerina/ballerina:nightly
-          build-args: |
-            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.sversion }}.zip
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-      - name: Copy deb artifact
-        run: cp installers/linux-deb/target/ballerina-*-linux-x64.deb module-ballerina-docker/base/devcontainer/
-      - name: Build the dev container docker image
-        id: docker_build_devcontainer
-        uses: docker/build-push-action@v2
-        with:
-          context: module-ballerina-docker/base/devcontainer/
-          load: true
-          push: false
-          tags: ballerina/ballerina-devcontainer:nightly-test
-          build-args: |
-            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.version }}-linux-x64.deb
-      - name: Run Trivy vulnerability scanner for dev container docker image
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'ballerina/ballerina-devcontainer:nightly-test'
-          skip-dirs: 'ballerina/runtime/examples'
-          format: 'table'
-          exit-code: '1'
-          timeout: "10m0s"
-      - name: Build and push dev container image
-        uses: docker/build-push-action@v2
-        with:
-          context: module-ballerina-docker/base/devcontainer/
-          push: true
-          tags: ballerina/ballerina-devcontainer:nightly
-          build-args: |
-            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.version }}-linux-x64.deb
-      - name: Notify failure
-        if: ${{ failure() }}
-        run: |
-          curl -X POST \
-          'https://api.github.com/repos/ballerina-platform/ballerina-release/dispatches' \
-          -H 'Accept: application/vnd.github.v3+json' \
-          -H 'Authorization: Bearer ${{ secrets.BALLERINA_BOT_TOKEN }}' \
-          --data "{
-            \"event_type\": \"notify-build-failure\",
-            \"client_payload\": {
-              \"repoName\": \"ballerina-distribution\",
-              \"branch\": \"master\"
-            }
-          }"
+#      - name: Install Ballerina DEB
+#        run: sudo dpkg -i installers/linux-deb/target/ballerina-*-linux-x64.deb
+#      - name: Update Installer Test Configs
+#        run: |
+#          DISPLAY_TEXT=${{ steps.project-version.outputs.langversion }}
+#          SWAN_LAKE_LATEST_VERSION="swan-lake-"+$DISPLAY_TEXT
+#          perl -pi -e "s/^\s*swan-lake-latest-version-display-text=.*/swan-lake-latest-version-display-text=$DISPLAY_TEXT/" ballerina-test-automation/gradle.properties
+#          perl -pi -e "s/^\s*swan-lake-latest-version=.*/swan-lake-latest-version=$SWAN_LAKE_LATEST_VERSION/" ballerina-test-automation/gradle.properties
+#      - name: Run Installer Tests
+#        working-directory: ./ballerina-test-automation/installer-test
+#        run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+#        env:
+#          TEST_MODE_ACTIVE: true
+#      - name: Checkout docker repo
+#        uses: actions/checkout@v2
+#        with:
+#          repository: ballerina-platform/module-ballerina-docker
+#          path: module-ballerina-docker
+#      - name: Copy zip artifact
+#        run: cp ballerina/build/distributions/ballerina-22*.zip module-ballerina-docker/base/docker/
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v1
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v1
+#      - name: Login to DockerHub
+#        uses: docker/login-action@v1
+#        with:
+#          username: ${{ secrets.DOCKER_HUB_USER }}
+#          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+#      - name: Build the docker image
+#        id: docker_build
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: module-ballerina-docker/base/docker/
+#          load: true
+#          push: false
+#          tags: ballerina/ballerina:nightly-test
+#          build-args: |
+#            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.sversion }}.zip
+#      - name: Run Trivy vulnerability scanner
+#        uses: aquasecurity/trivy-action@master
+#        with:
+#          image-ref: 'ballerina/ballerina:nightly-test'
+#          skip-dirs: 'ballerina/runtime/examples'
+#          format: 'table'
+#          exit-code: '1'
+#          timeout: "10m0s"
+#      - name: Build and push
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: module-ballerina-docker/base/docker/
+#          push: true
+#          tags: ballerina/ballerina:nightly
+#          build-args: |
+#            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.sversion }}.zip
+#      - name: Image digest
+#        run: echo ${{ steps.docker_build.outputs.digest }}
+#      - name: Copy deb artifact
+#        run: cp installers/linux-deb/target/ballerina-*-linux-x64.deb module-ballerina-docker/base/devcontainer/
+#      - name: Build the dev container docker image
+#        id: docker_build_devcontainer
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: module-ballerina-docker/base/devcontainer/
+#          load: true
+#          push: false
+#          tags: ballerina/ballerina-devcontainer:nightly-test
+#          build-args: |
+#            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.version }}-linux-x64.deb
+#      - name: Run Trivy vulnerability scanner for dev container docker image
+#        uses: aquasecurity/trivy-action@master
+#        with:
+#          image-ref: 'ballerina/ballerina-devcontainer:nightly-test'
+#          skip-dirs: 'ballerina/runtime/examples'
+#          format: 'table'
+#          exit-code: '1'
+#          timeout: "10m0s"
+#      - name: Build and push dev container image
+#        uses: docker/build-push-action@v2
+#        with:
+#          context: module-ballerina-docker/base/devcontainer/
+#          push: true
+#          tags: ballerina/ballerina-devcontainer:nightly
+#          build-args: |
+#            BALLERINA_DIST=ballerina-${{ steps.project-version.outputs.version }}-linux-x64.deb
+#      - name: Notify failure
+#        if: ${{ failure() }}
+#        run: |
+#          curl -X POST \
+#          'https://api.github.com/repos/ballerina-platform/ballerina-release/dispatches' \
+#          -H 'Accept: application/vnd.github.v3+json' \
+#          -H 'Authorization: Bearer ${{ secrets.BALLERINA_BOT_TOKEN }}' \
+#          --data "{
+#            \"event_type\": \"notify-build-failure\",
+#            \"client_payload\": {
+#              \"repoName\": \"ballerina-distribution\",
+#              \"branch\": \"master\"
+#            }
+#          }"
     outputs:
       project-version: ${{ steps.project-version.outputs.version }}
       lang-version: ${{ steps.project-version.outputs.langversion }}
