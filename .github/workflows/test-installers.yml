@@ -37,3 +37,4 @@ jobs:
       - name: Run Installer Tests
         working-directory: ./ballerina-test-automation/installer-test
         run: ./../gradlew build --stacktrace -scan --console=plain --no-daemon -DballerinaInstalled=true
+
